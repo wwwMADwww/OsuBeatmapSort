@@ -1,11 +1,12 @@
-﻿using NLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
+using NLog;
 
 namespace OsuBeatmapsetProcessor.MovePlayedBeatmapset
 {
@@ -18,26 +19,38 @@ namespace OsuBeatmapsetProcessor.MovePlayedBeatmapset
 
         public MoveDirBeatmapsetProcessStrategy(
             string mapsetPlayedDir,
-            string mapsetNotPlayedDir,
-            Logger logger
+            string mapsetNotPlayedDir
             )
         {
             _mapsetPlayedDir    = Path.GetFullPath(mapsetPlayedDir);
             _mapsetNotPlayedDir = Path.GetFullPath(mapsetNotPlayedDir);
-            _logger = logger;
+            
+            _logger = LogManager.GetLogger("logger");
 
             if (!Directory.Exists(_mapsetPlayedDir))    Directory.CreateDirectory(_mapsetPlayedDir);
             if (!Directory.Exists(_mapsetNotPlayedDir)) Directory.CreateDirectory(_mapsetNotPlayedDir);
 
-            logger.Info($"Dir for played beatmapsets is '{_mapsetPlayedDir}'.");
-            logger.Info($"Dir for not played beatmapsets is '{_mapsetNotPlayedDir}'.");
+            _logger.Info($"Dir for played beatmapsets is '{_mapsetPlayedDir}'.");
+            _logger.Info($"Dir for not played beatmapsets is '{_mapsetNotPlayedDir}'.");
         }
 
         
-        public void Process(IEnumerable<BeatmapsetInfo> beatmapsetInfoList)
+        public async Task Process(BufferBlock<BeatmapsetInfo> beatmapsetInfoList)
         {
-            foreach (var beatmapsetInfo in beatmapsetInfoList)
+
+            while(true)
             {
+                
+
+                if (!await beatmapsetInfoList.OutputAvailableAsync())
+                {
+                    _logger.Trace($"Beatmapset info channel closed.");
+                    break;
+                }
+
+                if (!beatmapsetInfoList.TryReceive(x => true, out BeatmapsetInfo beatmapsetInfo))
+                    continue;
+
                 string destinationDir = null;
 
                 try
@@ -63,9 +76,11 @@ namespace OsuBeatmapsetProcessor.MovePlayedBeatmapset
                 }
                 catch (Exception e)
                 {
-                    _logger.Error($"Error occured while moving beatmapset dir '{beatmapsetInfo.Directory}' to '{destinationDir}': " + Environment.NewLine + e.ToString());
+                    _logger.Error($"Error occured during moving beatmapset dir '{beatmapsetInfo.Directory}' to '{destinationDir}':"+ 
+                        $"{Environment.NewLine}{e.ToString()}");
                 }
-            }
+
+            } // /while
 
 
         }

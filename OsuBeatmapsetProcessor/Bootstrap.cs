@@ -20,8 +20,8 @@ namespace OsuBeatmapsetProcessor
 
             IBeatmapsetProcessFactory factory = null;
 
-            if (options is MovePlayedBeatmapsetProcessFactory.IFactoryParams)
-                factory = new MovePlayedBeatmapsetProcessFactory((MovePlayedBeatmapsetProcessFactory.IFactoryParams) options);
+            if (options is MovePlayedBeatmapsetProcessOptions)
+                factory = new MovePlayedBeatmapsetProcessFactory((MovePlayedBeatmapsetProcessOptions) options);
 
             // else if (options is )
             //   factory = 
@@ -60,43 +60,5 @@ namespace OsuBeatmapsetProcessor
 
     [Verb("Stub")]
     class Options: IOptions { }
-
-    #region MovePlayedBeatmapset options
-
-    [Verb("MovePlayedBeatmapset")]
-    class MovePlayedBeatmapsetProcessOptions: IOptions, MovePlayedBeatmapsetProcessFactory.IFactoryParams
-    {
-        [Option("apikey", Required = true,
-          HelpText = "osu!api access key.")]
-        public String ApiKey { get; set; }
-
-        [Option("playerid", Required = true,
-          HelpText = "Player ID")]
-        public int UserID { get; set; }
-
-        [Option("ThreadCount", Default = 16, Required = false,
-          HelpText = "Number of threads for parallel processing.")]
-        public int ThreadCount { get; set; }
-
-        [Option("OsuDbFilename", Default = "osu!.db", Required = false,
-          HelpText = "Path to osu!.db file.")]
-        public String OsuDbFilename { get; set; }
-
-        [Option("SongsDir", Default = "Songs", Required = false,
-          HelpText = "Path to beatmapsets directory.")]
-        public String SongsDir { get; set; }
-
-
-        [Option("mapsetPlayedDir", Default = "SongsPlayed", Required = false,
-          HelpText = "Dir for played beatmapsets.")]
-        public String MapsetPlayedDir { get; set; }
-
-        [Option("mapsetNotPlayedDir", Default = "SongsNotPlayed", Required = false,
-          HelpText = "Dir for not played beatmapsets.")]
-        public String MapsetNotPlayedDir { get; set; }
-
-    }
-
-    #endregion
 
 }

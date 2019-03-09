@@ -8,7 +8,7 @@ namespace OsuBeatmapsetProcessor
 {
     public interface IBeatmapsetProcess
     {
-        void Process();
+        Task Process();
     }
 
     public interface IBeatmapsetProcessFactory

@@ -4,16 +4,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OsuBeatmapsetProcessor.MovePlayedBeatmapset
 {
     public class MovePlayedBeatmapsetProcessFactory : IBeatmapsetProcessFactory
     {
-        private readonly IFactoryParams _factoryParams;
+        private readonly MovePlayedBeatmapsetProcessOptions _factoryParams;
 
         public MovePlayedBeatmapsetProcessFactory(
-            IFactoryParams factoryParams
+            MovePlayedBeatmapsetProcessOptions factoryParams
             )
         {
             _factoryParams = factoryParams;
@@ -22,23 +23,21 @@ namespace OsuBeatmapsetProcessor.MovePlayedBeatmapset
         public IBeatmapsetProcess Create()
         {
 
-            // настройки логгера находятся в app.config
-            var logger = LogManager.GetLogger("logger");
-
-            var directoryRepo = new BeatmapsetDirectoryRepository(_factoryParams.SongsDir);
+            var directoryRepo = new BeatmapsetDirectoryRepository(
+                _factoryParams.SongsDir,
+                _factoryParams.TasksCount
+            );
 
             var infoRepo = new PlayedBeatmapsetInfoRepository(
                 _factoryParams.UserID,
                 _factoryParams.ApiKey,
-                _factoryParams.ThreadCount,
-                _factoryParams.OsuDbFilename,
-                logger
+                _factoryParams.TasksCount,
+                _factoryParams.OsuDbFilename
             );
 
             var processStrategy = new MoveDirBeatmapsetProcessStrategy(
                 _factoryParams.MapsetPlayedDir, 
-                _factoryParams.MapsetNotPlayedDir, 
-                logger
+                _factoryParams.MapsetNotPlayedDir
             );
             
 
@@ -51,24 +50,46 @@ namespace OsuBeatmapsetProcessor.MovePlayedBeatmapset
             return processor;
         }
 
-        
-        public interface IFactoryParams
-        {
-            String ApiKey { get; }
-            
-            int UserID { get; }
-            
-            int ThreadCount { get; }
-            
-            String OsuDbFilename { get; }
-            
-            String SongsDir { get; }
-            
-            String MapsetPlayedDir { get; }
-            
-            String MapsetNotPlayedDir { get; }
-
-        }
     }
+
+    
+
+    #region MovePlayedBeatmapset options
+
+    [Verb("MovePlayedBeatmapset")]
+    public class MovePlayedBeatmapsetProcessOptions: IOptions
+    {
+        [Option("apikey", Required = true,
+          HelpText = "osu!api access key.")]
+        public String ApiKey { get; set; }
+
+        [Option("playerid", Required = true,
+          HelpText = "Player ID (not nickname)")]
+        public int UserID { get; set; }
+
+        [Option("TasksCount", Default = 20, Required = false,
+          HelpText = "Processing tasks count.")]
+        public int TasksCount { get; set; }
+
+        [Option("OsuDbFilename", Default = "osu!.db", Required = false,
+          HelpText = "Path to osu!.db file.")]
+        public String OsuDbFilename { get; set; }
+
+        [Option("SongsDir", Default = "Songs", Required = false,
+          HelpText = "Path to beatmapsets directory.")]
+        public String SongsDir { get; set; }
+
+
+        [Option("mapsetPlayedDir", Default = "SongsPlayed", Required = false,
+          HelpText = "Dir for played beatmapsets.")]
+        public String MapsetPlayedDir { get; set; }
+
+        [Option("mapsetNotPlayedDir", Default = "SongsNotPlayed", Required = false,
+          HelpText = "Dir for not played beatmapsets.")]
+        public String MapsetNotPlayedDir { get; set; }
+
+    }
+
+    #endregion
     
 }

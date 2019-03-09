@@ -23,11 +23,11 @@ namespace OsuBeatmapsetProcessor
             _beatmapsetProcessStrategy = beatmapsetProcessStrategy;
         }
 
-        public void Process()
+        public async Task Process()
         {
             var beatmapDirectoryList = _beatmapsetDirectoriesListStrategy.GetDirectories();
-            var beatmapInfoList = _beatmapsetInfoRepository.GetBeatmapsetInfoRepository(beatmapDirectoryList);
-            _beatmapsetProcessStrategy.Process(beatmapInfoList);
+            var beatmapInfoList = _beatmapsetInfoRepository.GetBeatmapsetInfo(beatmapDirectoryList);
+            await _beatmapsetProcessStrategy.Process(beatmapInfoList);
         }
     }
 

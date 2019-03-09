@@ -19,12 +19,13 @@ namespace OsuBeatmapsetProcessor
             {
                 var process = new Bootstrap().GetBeatmapsetProcess();
 
-                process?.Process();
+                process.Process().Wait();
             }
             catch (Exception e)
             {
-                var _logger = LogManager.GetLogger("logger");
-                _logger.Error(e.ToString());
+                var logger = LogManager.GetLogger("logger");
+                logger.Error(e.ToString());
+                throw;
             }
 
             Console.WriteLine("Press enter to exit;");
