@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30711.63
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsuBeatmapsetProcessor", "OsuBeatmapsetProcessor\OsuBeatmapsetProcessor.csproj", "{687912D5-94C2-48A7-9066-069FEA7CD95B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OsuBeatmapSort", "OsuBeatmapSort\OsuBeatmapSort.csproj", "{687912D5-94C2-48A7-9066-069FEA7CD95B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

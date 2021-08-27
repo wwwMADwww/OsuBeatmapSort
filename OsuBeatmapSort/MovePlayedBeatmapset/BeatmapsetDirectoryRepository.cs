@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using NLog;
 
-namespace OsuBeatmapsetProcessor.MovePlayedBeatmapset
+namespace OsuBeatmapSort.MovePlayedBeatmapset
 {
     public class BeatmapsetDirectoryRepository : IBeatmapsetDirectoryRepository<string>
     {

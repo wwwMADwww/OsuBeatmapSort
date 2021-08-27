@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OsuBeatmapsetProcessor.MovePlayedBeatmapset
+namespace OsuBeatmapSort.MovePlayedBeatmapset
 {
     public class MovePlayedBeatmapsetProcessFactory : IBeatmapsetProcessFactory
     {

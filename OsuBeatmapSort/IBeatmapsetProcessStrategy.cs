@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 
-namespace OsuBeatmapsetProcessor
+namespace OsuBeatmapSort
 {
-    public interface IBeatmapsetDirectoryRepository<TBeatmapsetDirectory>
+    public interface IBeatmapsetProcessStrategy<TBeatmapsetInfo>
     {
-        BufferBlock<string> GetDirectories();
+        Task Process(BufferBlock<TBeatmapsetInfo> beatmapsetInfoList);
     }
 }

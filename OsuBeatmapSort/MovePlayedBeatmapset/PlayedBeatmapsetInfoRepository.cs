@@ -13,7 +13,7 @@ using osuElements.Api.Repositories;
 using osuElements.Beatmaps;
 using osuElements.Db;
 
-namespace OsuBeatmapsetProcessor.MovePlayedBeatmapset
+namespace OsuBeatmapSort.MovePlayedBeatmapset
 {
     
     public class PlayedBeatmapsetInfoRepository : IBeatmapsetInfoRepository<string, BeatmapsetInfo>

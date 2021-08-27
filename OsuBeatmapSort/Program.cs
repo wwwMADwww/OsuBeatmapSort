@@ -1,14 +1,14 @@
-﻿using CommandLine;
-using NLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CommandLine;
+using NLog;
 
-namespace OsuBeatmapsetProcessor
+namespace OsuBeatmapSort
 {
     class Program
     {
