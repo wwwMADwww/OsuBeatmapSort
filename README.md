@@ -1,44 +1,69 @@
-# OsuBeatmapsetProcessor
+# OsuBeatmapSort
 
-Утилита для массовой обработки мапсетов osu.
+This console utility moves played osu mapsets to one dir and not played mapsets to another dir. 
 
-Для скачивания дистрибутива перейдите на страницу релизов - [ссылка](https://github.com/wwwMADwww/OsuBeatmapsetProcessor/releases).
+Beatmap set considered as played if any map in it was played. Map status is determined by special flag in `osu!.db` or by presence of any score specified player have on this map in online leaderboard.
 
-Для запуска требуется наличие установленной среды выполнения .NET Core 2.2 или выше - [ссылка](https://dotnet.microsoft.com/download)
+## Download and run
 
-## Общий синтаксис запуска утилиты:
+To download binary executables please go to [Releases](https://github.com/wwwMADwww/OsuBeatmapSort/releases) page.
 
-    dotnet OsuBeatmapsetProcessor.dll [--help] <имя процесса>
-    dotnet OsuBeatmapsetProcessor.dll <имя процесса> [Параметры процесса]
-    
-## Процесс MovePlayedBeatmapset:
+This app requires .NET 5 or higher, please [download](https://dotnet.microsoft.com/download) and install it if you haven't yet.
 
-Перемещает мапсеты из папки `SongsDir` в папку `mapsetPlayedDir` (если были попытки пройти хоть одну карту из мапсета) или `mapsetNotPlayedDir` (если не было таких попыток ни на одной карте из мапсета). Наличие попыток пройти карту определяется по локальной базе osu `OsuDbFilename` и онлайн таблице рекордов.
+This app uses osu!api which requires API Key, you can get it from [this](https://osu.ppy.sh/p/api/) page.
 
-### Аргументы:
+## Commandline params:
 
-    dotnet OsuBeatmapsetProcessor.dll [--help] MovePlayedBeatmapset
-    dotnet OsuBeatmapsetProcessor.dll MovePlayedBeatmapset [Параметры]
-      
-      Параметры:
-      
-        --apikey               - личный ключ доступа к osu!api. Получить можно здесь https://osu.ppy.sh/p/api.
-        
-        --playerid             - идентификатор игрока (не ник). Получить его можно из ссылки на свой профиль.
-        
-        [--OsuDbFilename]      - путь до файла osu!.db. По умолчанию = "osu!.db".
-        
-        [--SongsDir]           - путь до папки с мапсетами. По умолчанию = "Songs".
-        
-        [--mapsetPlayedDir]    - путь до папки для сыгранных мапсетов. По умолчанию = "songsPlayed".
-        
-        [--mapsetNotPlayedDir] - путь до папки для несыгранных мапсетов. По умолчанию = "songsNotPlayed".
-        
-        [--TasksCount]         - количество асинхронных операций обработки. По умолчанию = 20.
+To see this list you can just run the app without any params.
 
-### Примеры запуска:
+```
+  --apiKey          Required. osu!api access key.
 
-    dotnet OsuBeatmapsetProcessor.dll MovePlayedBeatmapset --apikey=0102030405060708090a0b0c0d0e0f1011121314 --playerid=1337
+  --apiRpm          (Default: 0) Maximum requests to osu!api per minute. Zero means no limit.
 
-    dotnet OsuBeatmapsetProcessor.dll MovePlayedBeatmapset --apikey=0102030405060708090a0b0c0d0e0f1011121314 --playerid=1337 --osudbfilename D:\GAMES\osu!\osu!.db --songsdir D:\GAMES\osu!\songs --mapsetplayeddir D:\GAMES\osu!\SongsPlayed --mapsetnotplayeddir D:\GAMES\osu!\SongsNotPlayed
+  --apiThreads      (Default: 8) Number of threads for requesting info from osu!api. Useless if apiRpm is set.
 
+  --playerId        Required. Player ID (ID, not nickname)
+
+  --dbFilename      (Default: osu!.db) Path to osu!.db file.
+
+  --dirGame         Required. Path to the game directory. Will be used as base path for any relative path.
+
+  --dirSongs        (Default: Songs) Path to beatmapsets directory.
+
+  --dirPlayed       (Default: SongsPlayed) Dir for played beatmapsets. '?' means that mapsets will not be moved.
+
+  --dirNotPlayed    (Default: SongsNotPlayed) Dir for not played beatmapsets. '?' means that mapsets will not be moved.
+
+  --dirError        (Default: SongsError) Dir for beatmapsets during processing which error is occurred. '?' means that
+                    mapsets will not be moved.
+
+  --help            Display this help screen.
+
+  --version         Display version information.
+```
+
+
+## Run examples
+
+---
+
+`OsuBeatmapSort --apiKey=00112233445566778899aabbccddeeff00112233 --playerId=12345678 --dirGame="D:\GAMES\osu!"` 
+
+App will 
+- scan mapsets in `D:\GAMES\osu!\Songs`
+- move played mapsets to `D:\GAMES\osu!\SongsPlayed`
+- move not played mapsets to `D:\GAMES\osu!\SongsNotPlayed`
+- move mapsets with error to `D:\GAMES\osu!\SongsError`
+
+---
+
+`OsuBeatmapSort --apiKey=00112233445566778899aabbccddeeff00112233 --playerId=12345678 --dirGame="D:\GAMES\osu!" --dirPlayed="played" --dirNotPlayed="D:\notplayed" --dirError=?`
+
+App will
+- scan mapsets in `D:\GAMES\osu!\Songs`
+- move played mapsets to `D:\GAMES\osu!\played`
+- move not played mapsets to `D:\notplayed`
+- leave mapsets with error in `D:\GAMES\osu!\Songs`
+
+---

@@ -28,7 +28,7 @@ namespace OsuBeatmapSort
 
                 string BasedPath(string basePath, string relativePath)
                 {
-                    if (string.IsNullOrWhiteSpace(basePath) || string.IsNullOrWhiteSpace(relativePath))
+                    if (string.IsNullOrWhiteSpace(basePath) || string.IsNullOrWhiteSpace(relativePath) || Path.IsPathFullyQualified(relativePath))
                         return relativePath;
                     else
                         return Path.Combine(basePath, relativePath);
